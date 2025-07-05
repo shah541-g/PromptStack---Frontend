@@ -4,7 +4,14 @@
   "version": "1.0.0",
   "description": "Modern AI-powered IDE frontend built with React, Vite, and Tailwind CSS",
   "type": "module",
-  "keywords": ["react", "vite", "tailwindcss", "ai", "ide", "frontend"],
+  "keywords": [
+    "react",
+    "vite",
+    "tailwindcss",
+    "ai",
+    "ide",
+    "frontend"
+  ],
   "author": "PromptStack Team",
   "license": "MIT",
   "scripts": {
@@ -14,6 +21,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "daisyui": "^4.12.24",
     "lucide-react": "^0.525.0",
     "react": "^19.1.0",

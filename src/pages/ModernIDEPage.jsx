@@ -15,9 +15,12 @@ import {
   MessageSquare,
   Sparkles,
   Clock,
-  Loader2
+  Loader2,
+  Eye,
+  FileText
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import CodeEditor from '../components/CodeEditor';
 
 const ModernIDEPage = () => {
   const [messages, setMessages] = useState([
@@ -36,6 +39,7 @@ const ModernIDEPage = () => {
   const [previewMode, setPreviewMode] = useState('live'); // 'live' or 'error'
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeSection, setActiveSection] = useState('chat');
+  const [rightPanelView, setRightPanelView] = useState('preview'); // 'preview' or 'code'
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -321,36 +325,71 @@ const ModernIDEPage = () => {
             </div>
           </div>
 
-          {/* Right Panel - Live Preview */}
+          {/* Right Panel - Live Preview / Code Editor */}
           <div className="w-full lg:w-1/2 lg:max-w-2xl flex flex-col bg-white dark:bg-gray-800 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700">
-            {/* Preview Header */}
+            {/* Panel Header */}
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 shadow-sm">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                  <Rocket className="w-5 h-5 text-blue-500" />
-                  Live Preview
-                </h2>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setPreviewMode(previewMode === 'live' ? 'error' : 'live')}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                      previewMode === 'live'
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                        : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                    }`}
-                  >
-                    {previewMode === 'live' ? (
-                      <div className="flex items-center gap-1">
-                        <Play className="w-3 h-3" />
-                        Live
-                      </div>
+                <div className="flex items-center gap-4">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                    {rightPanelView === 'preview' ? (
+                      <Rocket className="w-5 h-5 text-blue-500" />
                     ) : (
-                      <div className="flex items-center gap-1">
-                        <Bug className="w-3 h-3" />
-                        Error
-                      </div>
+                      <Code className="w-5 h-5 text-purple-500" />
                     )}
-                  </button>
+                    {rightPanelView === 'preview' ? 'Live Preview' : 'Code Editor'}
+                  </h2>
+                  
+                  {/* View Toggle */}
+                  <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                    <button
+                      onClick={() => setRightPanelView('preview')}
+                      className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+                        rightPanelView === 'preview'
+                          ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      }`}
+                    >
+                      <Eye className="w-3 h-3 mr-1 inline" />
+                      Preview
+                    </button>
+                    <button
+                      onClick={() => setRightPanelView('code')}
+                      className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+                        rightPanelView === 'code'
+                          ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      }`}
+                    >
+                      <FileText className="w-3 h-3 mr-1 inline" />
+                      Code
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  {rightPanelView === 'preview' && (
+                    <button
+                      onClick={() => setPreviewMode(previewMode === 'live' ? 'error' : 'live')}
+                      className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                        previewMode === 'live'
+                          ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                          : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                      }`}
+                    >
+                      {previewMode === 'live' ? (
+                        <div className="flex items-center gap-1">
+                          <Play className="w-3 h-3" />
+                          Live
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1">
+                          <Bug className="w-3 h-3" />
+                          Error
+                        </div>
+                      )}
+                    </button>
+                  )}
                   <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
                     <Settings className="w-4 h-4 text-gray-500" />
                   </button>
@@ -358,29 +397,39 @@ const ModernIDEPage = () => {
               </div>
             </div>
 
-            {/* Preview Content */}
-            <div className="flex-1 flex items-center justify-center p-8">
-              <div className="text-center max-w-md">
-                <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Rocket className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Live Preview</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-                  Your generated code will appear here. Start a conversation with the AI assistant to see your app come to life!
-                </p>
-                
-                {previewMode === 'error' && (
-                  <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                    <div className="flex items-center gap-2 text-red-700 dark:text-red-400">
-                      <Bug className="w-4 h-4" />
-                      <span className="text-sm font-medium">Build Error Mode</span>
+            {/* Panel Content */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+              {rightPanelView === 'preview' ? (
+                // Preview Content
+                <div className="flex-1 flex items-center justify-center p-8">
+                  <div className="text-center max-w-md">
+                    <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
+                      <Rocket className="w-10 h-10 text-white" />
                     </div>
-                    <p className="text-xs text-red-600 dark:text-red-500 mt-1">
-                      This is where build errors would be displayed
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Live Preview</h3>
+                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                      Your generated code will appear here. Start a conversation with the AI assistant to see your app come to life!
                     </p>
+                    
+                    {previewMode === 'error' && (
+                      <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                        <div className="flex items-center gap-2 text-red-700 dark:text-red-400">
+                          <Bug className="w-4 h-4" />
+                          <span className="text-sm font-medium">Build Error Mode</span>
+                        </div>
+                        <p className="text-xs text-red-600 dark:text-red-500 mt-1">
+                          This is where build errors would be displayed
+                        </p>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                // Code Editor Content
+                <div className="flex-1 overflow-hidden">
+                  <CodeEditor />
+                </div>
+              )}
             </div>
           </div>
         </div>
