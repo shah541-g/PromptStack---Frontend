@@ -32,8 +32,8 @@ const Login = () => {
 
       const user = result.user;
       const token = await user.getIdToken();
-      //  await sendAuthenticationToken({ token });
-      localStorage.setItem("my token", token);
+       await sendAuthenticationToken({ token });
+      // localStorage.setItem("my token", token);
 
       alert(`${provider} login successful!`);
     } catch (err) {

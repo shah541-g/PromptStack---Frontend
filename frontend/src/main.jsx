@@ -3,15 +3,17 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./Context/authContext.jsx";
-import  { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
+import { ThemeProvider } from "./Context/themeContext.jsx";
+
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <Toaster position="top-center"/>
-    <AuthProvider>
-      <div data-theme={"dim"}>
-        <App />
-      </div>
-    </AuthProvider>
-  </StrictMode>
+  <ThemeProvider>
+    <StrictMode>
+      <Toaster position="top-center" />
+      <AuthProvider>
+          <App />
+      </AuthProvider>
+    </StrictMode>
+  </ThemeProvider>
 );

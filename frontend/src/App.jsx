@@ -5,15 +5,31 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { useAuth } from "./Context/authContext";
 import Signup from "./Pages/SignUp";
 import OnBoardingPage from "./Pages/onBoardingPage";
+import { useTheme } from "./Context/themeContext.jsx";
 
 const App = () => {
   const { currentUser } = useAuth();
   const isAuthenticated = Boolean(currentUser);
   const onBoarded = Boolean(currentUser?.onboarding);
+  const {theme} = useTheme();
 
   return (
-    <BrowserRouter>
-      <Routes>
+    <div data-theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+        </Routes>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+        <Routes>
+          <Route path="/onBoarding" element={<OnBoardingPage />} />
+        </Routes>
+
+        {/* <Routes>
         <Route
           path="/"
           element={
@@ -46,8 +62,9 @@ const App = () => {
               )
             }
           />
-      </Routes>
-    </BrowserRouter>
+      </Routes> */}
+      </BrowserRouter>
+    </div>
   );
 };
 
