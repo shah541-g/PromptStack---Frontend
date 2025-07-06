@@ -4,7 +4,7 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
 } from "firebase/auth";
 import { app } from "../FireBase/firebaseConfig.js";
 import axios from "axios";
@@ -26,11 +26,16 @@ export const loginWithMail = async ({ email, password }) => {
 };
 
 export const sendAuthenticationToken = async ({ token }) => {
-  const response = await axios.post(("/api/firebaseAuthToken", { token }));
-  if (response) {
-    console.log("token send successfully");
-  } else {
-    console.log("token not send ");
+  try {
+    const response = await axios.post("/api/firebaseAuthToken", { token });
+
+    if (response.status === 200) {
+      console.log("Token sent successfully");
+    } else {
+      console.log("Unexpected response status:", response.status);
+    }
+  } catch (error) {
+    console.error("Failed to send token:", error);
   }
 };
 
@@ -39,8 +44,20 @@ export const logoutUser = async () => {
     await signOut(auth);
     console.log("User logged out");
     // Optionally clear localStorage or redirect
-    localStorage.removeItem("token");
+    // localStorage.removeItem("token");
   } catch (error) {
     console.error("Logout error:", error.message);
   }
 };
+
+
+export const onBoardingUser = async ({ formData }) => { 
+  try {
+    const response = await axios.post("/api/onboarding", formData);
+    return response.data;
+  } catch (error) {
+    console.error("Onboarding failed:", error);
+    throw error;
+  }
+};
+

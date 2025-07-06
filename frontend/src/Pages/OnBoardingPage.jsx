@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useAuth } from "../Context/authContext";
+import { Camera, Globe, Shuffle } from "lucide-react";
+import { onBoardingUser } from "../API/auth";
+import toast from "react-hot-toast";
 
 const OnBoardingPage = () => {
   const { currentUser } = useAuth();
@@ -9,17 +12,18 @@ const OnBoardingPage = () => {
     bio: currentUser?.bio || "",
     avatar: currentUser?.avatar || "",
   });
-  const [isPending,setIsPending] = useState(false)
+  const [isPending, setIsPending] = useState(false);
 
   const handleChange = (e) => {
-    const [name, value] = e.target;
-    setFormData((preV) => ({
-      ...preV,
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
     }));
   };
 
-  const handleChangeAvatar = () => {
+  const handleChangeAvatar = (e) => {
+    e.preventDefault();
     const index = Math.floor(Math.random() * 100) + 1;
     const randomAvatar = `https://avatar.iran.liara.run/public/${index}`;
     setFormData((prev) => ({
@@ -28,83 +32,100 @@ const OnBoardingPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsPending(true)
+    setIsPending(true);
+
+    try {
+      const data = await onBoardingUser({ formData });
+      toast.success(data);
+      console.log("Onboarding Success:", data);
+    } catch (error) {
+      toast.error("Error during onboarding:", error);
+      console.error("Error during onboarding:", error);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
-    <div className="flex flex-col justify-center items-center bg-base-100 p-10">
-      <div className="card max-w-3xl bg-base-200 shadow-xl card-bordered border-primary/25">
-        <div className="card-body p-6 sm:p-8">
-          <h1 className="font-bold text-2xl text-gray-200 text-center">
-            Complete Your Profile
-          </h1>
-          <form onSubmit={handleSubmit} className="space-y-6 form-control">
-            <div className="flex flex-col items-center justify-center space-y-4">
-              {formData.avatar ? (
-                <img
-                  src={formData.avatar}
-                  alt="Profile"
-                  className="w-20 h-20 overflow-hidden rounded-full object-cover"
-                />
-              ) : (
-                <div className="flex justify-center items-center h-full">
-                  <Camera className="w-20 h-20 text-base-content opacity-40 rounded-full border border-primary p-2" />
-                </div>
-              )}
-              <button
-                className="btn btn-secondary btn-outline"
-                onClick={handleChangeAvatar}
-              >
-                <Shuffle /> Generat Random Avatar
-              </button>
-              <div className="space-y-7"></div>
-            </div>
-            <div className="flex flex-col justify-start items-start gap-2">
-              <label htmlFor="userName" className="text-xs label-text">
-                User Name
-              </label>
-              <input
-                type="text"
-                name="userName"
-                required
-                value={formData.userName}
-                onChange={handleChange}
-                placeholder="JohnDoe"
-                className="input input-secondary w-full rounded focus:outline-none "
+    <div className="flex justify-center items-center min-h-screen bg-base-100 p-6">
+      <div className="w-full max-w-xl bg-base-200 rounded-xl shadow-lg border border-primary/20 p-6 sm:p-8">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-center text-white mb-6">
+          Complete Your Profile
+        </h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Avatar */}
+          <div className="flex flex-col items-center gap-4">
+            {formData.avatar ? (
+              <img
+                src={formData.avatar}
+                alt="Profile"
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-secondary shadow-md"
               />
-            </div>
-            <div>
-              <label htmlFor="bio" className="label-text text-xs">
-                Bio
-              </label>
-              <textarea
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
-                rows={3}
-                required
-                placeholder="Write a short Bio..."
-                className="textarea textarea-secondary w-full text-sm rounded focus:outline-none"
-              />
-            </div>
+            ) : (
+              <div className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center border border-dashed border-primary rounded-full text-base-content opacity-50">
+                <Camera className="w-8 h-8 sm:w-10 sm:h-10" />
+              </div>
+            )}
             <button
-              className="btn btn-primary w-full mt-3 mb-2"
-              type="submit"
-              disabled={isPending}
+              onClick={handleChangeAvatar}
+              className="btn btn-outline btn-secondary flex items-center gap-2 text-sm"
             >
-              {isPending ? (
-                <span className="loading loading-spinner text-secondary"></span>
-              ) : (
-                <div className="flex justify-center items-center gap-2">
-                  <Globe className="text-xs" />
-                  <p>Complete onBoarding</p>
-                </div>
-              )}
+              <Shuffle size={16} />
+              Generate Avatar
             </button>
-          </form>
-        </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="userName"
+              className="block text-sm text-primary mb-1"
+            >
+              User Name
+            </label>
+            <input
+              type="text"
+              name="userName"
+              value={formData.userName}
+              onChange={handleChange}
+              required
+              placeholder="JohnDoe"
+              className="input input-secondary w-full rounded-md"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="bio" className="block text-sm text-primary mb-1">
+              Bio
+            </label>
+            <textarea
+              name="bio"
+              value={formData.bio}
+              onChange={handleChange}
+              rows={4}
+              required
+              placeholder="Write a short bio..."
+              className="textarea textarea-secondary w-full rounded-md"
+            />
+          </div>
+
+          <button
+            className="btn btn-primary w-full flex justify-center items-center gap-2"
+            type="submit"
+            disabled={isPending}
+          >
+            {isPending ? (
+              <span className="loading loading-spinner text-secondary"></span>
+            ) : (
+              <>
+                <Globe size={16} />
+                Complete Onboarding
+              </>
+            )}
+          </button>
+        </form>
       </div>
     </div>
   );
