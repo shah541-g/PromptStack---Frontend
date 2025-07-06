@@ -4,12 +4,17 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./Context/authContext.jsx";
 
+import { Toaster } from "react-hot-toast";
+import { ThemeProvider } from "./Context/themeContext.jsx";
+
+
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <AuthProvider>
-      <div data-theme={"forest"}>
-        <App />
-      </div>
-    </AuthProvider>
-  </StrictMode>
+  <ThemeProvider>
+    <StrictMode>
+      <Toaster position="top-center" />
+      <AuthProvider>
+          <App />
+      </AuthProvider>
+    </StrictMode>
+  </ThemeProvider>
 );

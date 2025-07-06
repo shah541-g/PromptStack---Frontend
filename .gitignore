@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dependencies
 node_modules
 /.pnp
@@ -15,6 +16,8 @@ pids
 *.seed
 *.pid.lock
 
+=======
+>>>>>>> Ahmad
 # Logs
 logs
 *.log
@@ -24,6 +27,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+<<<<<<< HEAD
 # Coverage directory used by tools like istanbul
 coverage
 *.lcov
@@ -87,6 +91,13 @@ public
 # Temporary folders
 tmp/
 temp/
+=======
+node_modules
+.node_modules
+dist
+dist-ssr
+*.local
+>>>>>>> Ahmad
 
 # Editor directories and files
 .vscode/*
@@ -98,6 +109,7 @@ temp/
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< HEAD
 
 # OS generated files
 Thumbs.db
@@ -125,3 +137,5 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+=======
+>>>>>>> Ahmad

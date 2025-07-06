@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚀 PromptStack - AI-Powered IDE Frontend
 
 A modern, responsive frontend for PromptStack AI IDE built with React, Vite, and Tailwind CSS. Features a sleek two-panel layout with AI chat assistance and live code preview.
@@ -237,6 +238,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Built with ❤️ by the PromptStack Team**
 
 For questions or support, please open an issue or contact us at [support@promptstack.com](mailto:support@promptstack.com)+ Vite
+=======
+# React + Vite
+>>>>>>> Ahmad
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

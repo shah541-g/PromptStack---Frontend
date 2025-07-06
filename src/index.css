@@ -1,5 +1,6 @@
 @tailwind base;
 @tailwind components;
+<<<<<<< HEAD
 @tailwind utilities;
 
 /* Custom animations and enhancements */
@@ -82,3 +83,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
+=======
+@tailwind utilities;
+>>>>>>> Ahmad
