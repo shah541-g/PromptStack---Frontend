@@ -1,7 +1,13 @@
-import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  signInWithEmailAndPassword,
+  signOut
+} from "firebase/auth";
 import { app } from "../FireBase/firebaseConfig.js";
-import axios from "axios"
-
+import axios from "axios";
 
 const auth = getAuth(app);
 
@@ -19,12 +25,22 @@ export const loginWithMail = async ({ email, password }) => {
   return await signInWithEmailAndPassword(auth, email, password);
 };
 
-export const sendAuthenticationToken=async({token})=>{
-    const response = await axios.post(('/api/firebaseAuthToken',{token}))
-    if (response) {
-        console.log('token send successfully')
-    }
-    else{
-        console.log('token not send ')
-    }
-}
+export const sendAuthenticationToken = async ({ token }) => {
+  const response = await axios.post(("/api/firebaseAuthToken", { token }));
+  if (response) {
+    console.log("token send successfully");
+  } else {
+    console.log("token not send ");
+  }
+};
+
+export const logoutUser = async () => {
+  try {
+    await signOut(auth);
+    console.log("User logged out");
+    // Optionally clear localStorage or redirect
+    localStorage.removeItem("token");
+  } catch (error) {
+    console.error("Logout error:", error.message);
+  }
+};

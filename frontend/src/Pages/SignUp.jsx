@@ -5,8 +5,13 @@ import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { sendAuthenticationToken } from "../API/auth";
-const Login = () => {
-  const [data, setData] = useState({ email: "", password: "" });
+
+const Signup = () => {
+  const [data, setData] = useState({
+    name: "",
+    password: "",
+    email: "",
+  });
   const [isPending, setIsPending] = useState(false);
   const [loadingProvider, setLoadingProvider] = useState(null);
   const [error, setError] = useState(null);
@@ -65,7 +70,7 @@ const Login = () => {
   };
 
   return (
-    <div className="h-screen flex justify-center items-center p-20 bg-base-200 overflow-hidden">
+    <div className="h-screen flex justify-center items-center md:p-20 bg-base-200 overflow-hidden">
       <div className="flex flex-col md:flex-row rounded-xl overflow-hidden">
         {/* Left Panel */}
         <div className="flex flex-col justify-start items-start border border-primary/25 rounded-l-xl p-6 bg-base-100 shadow-lg w-full md:w-1/2">
@@ -83,13 +88,27 @@ const Login = () => {
           )}
 
           <section className="flex flex-col items-start justify-start mb-4">
-            <h2 className="text-2xl">Sign In</h2>
+            <h2 className="text-2xl">Sign Up</h2>
             <p className="text-xs">
-              Welcome back to PromStack! Log in to continue your journey.
+              Create your PromStack account to start building and collaborating
             </p>
           </section>
 
           <form onSubmit={handleSubmit} className="w-full space-y-2">
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                type="text"
+                name="name"
+                required
+                value={data.name}
+                onChange={handleChange}
+                placeholder="John Doe"
+                className="input input-bordered rounded-md w-full"
+              />
+            </div>
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -100,7 +119,7 @@ const Login = () => {
                 required
                 value={data.email}
                 onChange={handleChange}
-                placeholder="hello@gmail.com"
+                placeholder="john@gmail.com"
                 className="input input-bordered rounded-md w-full"
               />
             </div>
@@ -128,14 +147,14 @@ const Login = () => {
               {isPending ? (
                 <span className="loading loading-spinner text-secondary" />
               ) : (
-                "Sign In"
+                "Sign Up"
               )}
             </button>
 
             <p className="flex justify-center items-center text-sm">
-              Don't have an account?
-              <Link to="/signup" className="link link-primary ml-1">
-                Sign Up
+              Already have an account?
+              <Link to="/login" className="link link-primary ml-1">
+                Sign in
               </Link>
             </p>
           </form>
@@ -147,7 +166,7 @@ const Login = () => {
               disabled={loadingProvider === "google"}
             >
               {loadingProvider === "google" ? (
-                "Signing in..."
+                "Signing Up..."
               ) : (
                 <>
                   <FcGoogle className="text-xl" />
@@ -162,7 +181,7 @@ const Login = () => {
               disabled={loadingProvider === "github"}
             >
               {loadingProvider === "github" ? (
-                "Signing in..."
+                "Signing Up..."
               ) : (
                 <>
                   <FaGithub className="text-xl" />
@@ -176,16 +195,16 @@ const Login = () => {
         <div className="hidden md:flex flex-col justify-center items-center border border-primary/25 rounded-r-xl p-6 bg-base-100 shadow-lg bg-primary/10 w-1/2">
           <img
             className="w-3/4 h-auto"
-            src="/Sign in-bro.svg"
+            src="/Sign up-bro.svg"
             alt="Video call illustration"
           />
           <section className="flex flex-col items-center justify-center text-center mt-4">
             <p className="font-bold text-xl">
-              Build. Share. Collaborate with Developers Worldwide
+              Start Building with Developers Around the World
             </p>
             <p className="text-gray-400 text-sm mt-2">
-              PromStack helps you create, deploy, and grow your projects with a
-              community of passionate builders.
+              Join PromStack to collaborate, launch projects, and grow with a
+              global tech community.
             </p>
           </section>
         </div>
@@ -194,4 +213,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

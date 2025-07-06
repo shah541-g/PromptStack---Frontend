@@ -1,14 +1,33 @@
 import React from "react";
 import Login from "./Pages/Login";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Dashboard from "./Pages/Dashboard";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { useAuth } from "./Context/authContext";
+import SignUp from "./Pages/SignUp";
 
 const App = () => {
-  return (
+  const { currentUser } = useAuth();
+  const isAuthenticated = Boolean(currentUser);
+  const onBoarded = Boolean(currentUser?.onboarding);
 
+  return (
     <BrowserRouter>
-    
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            isAuthenticated && onBoarded ? (
+              <Dashboard />
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/OnBoardingPage"} />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={isAuthenticated ? <Navigate to="/" /> : <Login />}
+        />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
   );
