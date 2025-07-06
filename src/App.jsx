@@ -7,12 +7,16 @@ import Signup from "./Pages/SignUp";
 import OnBoardingPage from "./Pages/onBoardingPage";
 import { useTheme } from "./Context/themeContext.jsx";
 import ModernIDEPage from "./pages/ModernIDEPage.jsx";
+import DeploymentPage from "./pages/DeploymentPage.jsx";
+import HistoryPage from "./pages/HistoryPage.jsx";
+import AppLayout from "./Layout/AppLayout.jsx";
+import SettingsPage from "./pages/SettingsPage.jsx";
 
 const App = () => {
   const { currentUser } = useAuth();
   const isAuthenticated = Boolean(currentUser);
   const onBoarded = Boolean(currentUser?.onboarding);
-  const {theme} = useTheme();
+  const { theme } = useTheme();
 
   return (
     <div data-theme={theme}>
@@ -31,6 +35,36 @@ const App = () => {
         </Routes>
         <Routes>
           <Route path="/editor" element={<ModernIDEPage />} />
+        </Routes>
+        <Routes>
+          <Route
+            path="/deploy"
+            element={
+              <AppLayout showNavbar="true">
+                <DeploymentPage />
+              </AppLayout>
+            }
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/history"
+            element={
+              <AppLayout showNavbar="true">
+                <HistoryPage />
+              </AppLayout>
+            }
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/settings"
+            element={
+              <AppLayout showNavbar="true">
+                <SettingsPage />
+              </AppLayout>
+            }
+          />
         </Routes>
 
         {/* <Routes>
