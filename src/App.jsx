@@ -6,6 +6,7 @@ import { useAuth } from "./Context/authContext";
 import Signup from "./Pages/SignUp";
 import OnBoardingPage from "./Pages/onBoardingPage";
 import { useTheme } from "./Context/themeContext.jsx";
+import ModernIDEPage from "./pages/ModernIDEPage.jsx";
 
 const App = () => {
   const { currentUser } = useAuth();
@@ -27,6 +28,9 @@ const App = () => {
         </Routes>
         <Routes>
           <Route path="/onBoarding" element={<OnBoardingPage />} />
+        </Routes>
+        <Routes>
+          <Route path="/editor" element={<ModernIDEPage />} />
         </Routes>
 
         {/* <Routes>

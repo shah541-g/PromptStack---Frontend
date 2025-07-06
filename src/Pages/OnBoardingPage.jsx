@@ -51,7 +51,7 @@ const OnBoardingPage = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-base-100 p-6">
       <div className="w-full max-w-xl bg-base-200 rounded-xl shadow-lg border border-primary/20 p-6 sm:p-8">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-center text-white mb-6">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-center text-primary mb-6">
           Complete Your Profile
         </h1>
 

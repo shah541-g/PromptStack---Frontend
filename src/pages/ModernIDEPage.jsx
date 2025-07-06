@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import CodeEditor from '../components/CodeEditor';
+import ThemeSelector from '../Components/ThemeSelector';
+import { useTheme } from '../Context/themeContext';
 
 const ModernIDEPage = () => {
   const [messages, setMessages] = useState([
@@ -31,6 +33,7 @@ const ModernIDEPage = () => {
       timestamp: new Date()
     }
   ]);
+  const {theme} = useTheme();
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -195,6 +198,7 @@ const ModernIDEPage = () => {
                 <Moon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               )}
             </button>
+            {/* <ThemeSelector/> */}
             
             <div className="relative">
               <button 

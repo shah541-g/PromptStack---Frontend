@@ -7,7 +7,7 @@ const ThemeSelector = () => {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="dropdown dropdown-end">
+    <div className="dropdown dropdown-end z-10">
       {/* Dropdown trigger */}
       <button tabIndex={0} className="btn btn-circle btn-ghost">
         <PaletteIcon className="size-5" />
