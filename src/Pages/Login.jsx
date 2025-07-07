@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loginWithMail, socialLogin } from "../API/auth";
+import { loginWithMail, continueWithGithub,continueWithGoogle } from "../API/auth";
 import { Bolt } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
@@ -22,11 +22,31 @@ const Login = () => {
     }));
   };
 
-  const handleLogin = async (provider) => {
+  const handleGooglrLogin = async (provider) => {
     setLoadingProvider(provider);
     setError(null);
     try {
-      const backendUser = await socialLogin(provider);
+      const backendUser = await continueWithGoogle();
+      toast.success(`${provider} login successful!`);
+      setCurrentUser(backendUser);
+      navigate(
+        backendUser.onboarding == "true" ? "/" : "/onBoarding",
+        { replace: true } 
+      );
+    } catch (err) {
+      console.error(err);
+      const msg = err?.response?.data?.message || err.message || "Login failed";
+      toast.error(msg);
+      setError(msg);
+    } finally {
+      setLoadingProvider(null);
+    }
+  };
+  const handleGithubLogin = async (provider) => {
+    setLoadingProvider(provider);
+    setError(null);
+    try {
+      const backendUser = await continueWithGithub();
       toast.success(`${provider} login successful!`);
       setCurrentUser(backendUser);
       navigate(
@@ -144,7 +164,7 @@ const Login = () => {
 
           <div className="w-full flex flex-col gap-2 mt-4">
             <button
-              onClick={() => handleLogin("google")}
+              onClick={() => handleGooglrLogin("google")}
               className="flex items-center justify-center gap-2 bg-white border border-gray-300 text-black font-medium px-6 py-2 rounded hover:bg-gray-100 transition"
               disabled={loadingProvider === "google"}
             >
@@ -159,7 +179,7 @@ const Login = () => {
             </button>
 
             <button
-              onClick={() => handleLogin("github")}
+              onClick={() => handleGithubLogin("github")}
               className="flex items-center justify-center gap-2 bg-gray-900 text-white px-6 py-2 rounded hover:bg-gray-800 transition"
               disabled={loadingProvider === "github"}
             >

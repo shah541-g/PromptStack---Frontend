@@ -1,7 +1,7 @@
 import { useState } from "react";
-import {  signUpWithMail, socialLogin } from "../API/auth";
+import {  continueWithGithub, continueWithGoogle, signUpWithMail } from "../API/auth";
 import { Bolt } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 // import { sendAuthenticationToken } from "../API/auth";
@@ -19,6 +19,7 @@ const {setCurrentUser} = useAuth();
   const [isPending, setIsPending] = useState(false);
   const [loadingProvider, setLoadingProvider] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prev) => ({
@@ -27,23 +28,46 @@ const {setCurrentUser} = useAuth();
     }));
   };
 
- const handleLogin = async (provider) => {
-    setLoadingProvider(provider);
-    setError(null);
-
-    try {
-      const backendUser = await socialLogin(provider);
-      toast.success(`${provider} Sign Up successful!`);
-      setCurrentUser(backendUser);
-    } catch (err) {
-      console.error(err);
-      const msg = err?.response?.data?.message || err.message || "Sign Up failed";
-      toast.error(msg);
-      setError(msg);
-    } finally {
-      setLoadingProvider(null);
-    }
-  };
+  const handleGooglrLogin = async (provider) => {
+     setLoadingProvider(provider);
+     setError(null);
+     try {
+       const backendUser = await continueWithGoogle();
+       toast.success(`${provider} SignUp successful!`);
+       setCurrentUser(backendUser);
+       navigate(
+         backendUser.onboarding == "true" ? "/" : "/onBoarding",
+         { replace: true } 
+       );
+     } catch (err) {
+       console.error(err);
+       const msg = err?.response?.data?.message || err.message || "Login failed";
+       toast.error(msg);
+       setError(msg);
+     } finally {
+       setLoadingProvider(null);
+     }
+   };
+   const handleGithubLogin = async (provider) => {
+     setLoadingProvider(provider);
+     setError(null);
+     try {
+       const backendUser = await continueWithGithub();
+       toast.success(`${provider} login successful!`);
+       setCurrentUser(backendUser);
+       navigate(
+         backendUser.onboarding == "true" ? "/" : "/onBoarding",
+         { replace: true } 
+       );
+     } catch (err) {
+       console.error(err);
+       const msg = err?.response?.data?.message || err.message || "Login failed";
+       toast.error(msg);
+       setError(msg);
+     } finally {
+       setLoadingProvider(null);
+     }
+   };
 
  const handleSubmit = async (e) => {
   e.preventDefault();
@@ -182,7 +206,7 @@ const {setCurrentUser} = useAuth();
 
           <div className="w-full flex flex-col gap-2 mt-4">
             <button
-              onClick={() => handleLogin("google")}
+              onClick={() => handleGooglrLogin("google")}
               className="flex items-center justify-center gap-2 bg-white border border-gray-300 text-black font-medium px-6 py-2 rounded hover:bg-gray-100 transition"
               disabled={loadingProvider === "google"}
             >
@@ -197,7 +221,7 @@ const {setCurrentUser} = useAuth();
             </button>
 
             <button
-              onClick={() => handleLogin("github")}
+              onClick={() => handleGithubLogin("github")}
               className="flex items-center justify-center gap-2 bg-gray-900 text-white px-6 py-2 rounded hover:bg-gray-800 transition"
               disabled={loadingProvider === "github"}
             >
