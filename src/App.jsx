@@ -1,97 +1,62 @@
 import React from "react";
-import Login from "./Pages/Login";
-import Dashboard from "./Pages/Dashboard";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./Context/authContext";
-import Signup from "./Pages/SignUp";
+import { useTheme } from "./Context/themeContext";
+
+import Login from "./pages/Login";
+import Signup from "./pages/SignUp";
+import LandingPage from "./pages/LandingPage";
 import OnBoardingPage from "./Pages/onBoardingPage";
-import { useTheme } from "./Context/themeContext.jsx";
-import ModernIDEPage from "./pages/ModernIDEPage.jsx";
-import DeploymentPage from "./pages/DeploymentPage.jsx";
-import HistoryPage from "./pages/HistoryPage.jsx";
-import AppLayout from "./Layout/AppLayout.jsx";
-import SettingsPage from "./pages/SettingsPage.jsx";
+import ModernIDEPage from "./pages/ModernIDEPage";
+import DeploymentPage from "./pages/DeploymentPage";
+import HistoryPage from "./pages/HistoryPage";
+import SettingsPage from "./pages/SettingsPage";
+import AppLayout from "./Layout/AppLayout";
 
 const App = () => {
   const { currentUser } = useAuth();
-  const isAuthenticated = Boolean(currentUser);
-  const onBoarded = Boolean(currentUser?.onboarding);
+  const isAuthenticated = Boolean(localStorage.getItem("token"));
+  const isOnBoarded = localStorage.getItem("onBoarded") === "true";
   const { theme } = useTheme();
 
   return (
     <div data-theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-        </Routes>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-        </Routes>
-        <Routes>
-          <Route path="/signup" element={<Signup />} />
-        </Routes>
-        <Routes>
-          <Route path="/onBoarding" element={<OnBoardingPage />} />
-        </Routes>
-        <Routes>
-          <Route path="/editor" element={<ModernIDEPage />} />
-        </Routes>
-        <Routes>
           <Route
-            path="/deploy"
+            path="/"
             element={
-              <AppLayout showNavbar="true">
-                <DeploymentPage />
-              </AppLayout>
+              isAuthenticated && isOnBoarded ? (
+                <ModernIDEPage />
+              ) : (
+                <Navigate to={!isAuthenticated ? "/home" : "/onBoarding"} />
+              )
             }
           />
-        </Routes>
-        <Routes>
+          <Route path="/home" element={<LandingPage />} />
           <Route
-            path="/history"
+            path="/signup"
+            element={!isAuthenticated ? <Signup /> : <Navigate to={"/"} />}
+          />
+          <Route
+            path="/login"
             element={
-              <AppLayout showNavbar="true">
-                <HistoryPage />
-              </AppLayout>
+              !isAuthenticated ? (
+                <Login />
+              ) : !isOnBoarded ? (
+                <Navigate to={"/onBoarding"} />
+              ) : (
+                <Navigate to={"/"} />
+              )
             }
           />
-        </Routes>
-        <Routes>
-          <Route
-            path="/settings"
-            element={
-              <AppLayout showNavbar="true">
-                <SettingsPage />
-              </AppLayout>
-            }
-          />
-        </Routes>
 
-        {/* <Routes>
-        <Route
-          path="/"
-          element={
-            isAuthenticated && onBoarded ? (
-              <Dashboard />
-            ) : (
-              <Navigate to={!isAuthenticated ? "/login" : "/onBoarding"} />
-            )
-          }
-        />
-        <Route
-          path="/login"
-          element={!isAuthenticated ? <Login /> : <Navigate to={"/"} />}
-        />
-        <Route
-          path="/signup"
-          element={!isAuthenticated ? <Signup/> : <Navigate to={"/"} />}
-        />
-         <Route
+          <Route
             path="/onBoarding"
             element={
               isAuthenticated ? (
-                !onBoarded ? (
-                  <OnBoardingPage /> 
+                !isOnBoarded ? (
+                  <OnBoardingPage />
                 ) : (
                   <Navigate to={"/"} />
                 )
@@ -100,7 +65,7 @@ const App = () => {
               )
             }
           />
-      </Routes> */}
+        </Routes>
       </BrowserRouter>
     </div>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../Components/DashboardComponents/Navbar";
+import Navbar from "../components/LandingPageComponents/Navbar";
 
 const AppLayout = ({ showNavbar=false , children }) => {
   return (

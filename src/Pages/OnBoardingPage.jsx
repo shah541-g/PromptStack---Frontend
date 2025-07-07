@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useAuth } from "../Context/authContext";
 import { Camera, Globe, Shuffle } from "lucide-react";
-import { onBoardingUser } from "../API/auth";
+import { onBoardingData } from "../API/auth";
 import toast from "react-hot-toast";
 
 const OnBoardingPage = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, setCurrentUser } = useAuth();
 
   const [formData, setFormData] = useState({
     userName: currentUser?.username || "",
@@ -25,7 +25,7 @@ const OnBoardingPage = () => {
   const handleChangeAvatar = (e) => {
     e.preventDefault();
     const index = Math.floor(Math.random() * 100) + 1;
-    const randomAvatar = `https://avatar.iran.liara.run/public/${index}`;
+    const randomAvatar = currentUser?.photoURL || `https://avatar.iran.liara.run/public/${index}`;
     setFormData((prev) => ({
       ...prev,
       avatar: randomAvatar,
@@ -37,16 +37,36 @@ const OnBoardingPage = () => {
     setIsPending(true);
 
     try {
-      const data = await onBoardingUser({ formData });
-      toast.success(data);
-      console.log("Onboarding Success:", data);
+      const userId = currentUser?.id;
+      if (!userId) {
+        toast.error("You have no Account");
+        return;
+      }
+
+      const { userName, bio, avatar } = formData;
+
+      const res = await onBoardingData({ id: userId, userName, bio, avatar });
+      toast.success(res.data.message);
+
+      
+      const isOnboarded = Boolean(res?.data.data?.user?.onboarding); 
+      localStorage.setItem("onBoarded", String(isOnboarded)); 
+
+      setCurrentUser(res.data.data.user);
+      console.log("user updated data ", res.data.data.user);
+      // Assuming setCurrentUser comes from useAuth()
     } catch (error) {
-      toast.error("Error during onboarding:", error);
+      const message =
+        error?.response?.data?.message || "Error during onboarding";
+      toast.error(message);
       console.error("Error during onboarding:", error);
     } finally {
       setIsPending(false);
     }
   };
+
+  // const {currentUser} = useAuth()
+  console.log("On boarding user ", currentUser);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-base-100 p-6">

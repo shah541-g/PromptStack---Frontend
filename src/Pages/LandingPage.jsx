@@ -2,14 +2,14 @@ import React from "react";
 import { useAuth } from "../Context/authContext";
 import { logoutUser } from "../API/auth";
 import { useNavigate } from "react-router-dom";
-import HeroSection from "../Components/DashboardComponents/HeroSection";
-import FeaturesSection from "../Components/DashboardComponents/FeaturesSection";
-import AudienceSection from "../Components/DashboardComponents/AudienceSection";
-import WaitlistSection from "../Components/DashboardComponents/WaitlistSection";
-import FooterSection from "../Components/DashboardComponents/FooterSection";
-import Navbar from "../Components/DashboardComponents/Navbar";
+import HeroSection from "../components/LandingPageComponents/HeroSection";
+import FeaturesSection from "../components/LandingPageComponents/FeaturesSection";
+import AudienceSection from "../components/LandingPageComponents/AudienceSection";
+import WaitlistSection from "../components/LandingPageComponents/WaitlistSection";
+import FooterSection from "../components/LandingPageComponents/FooterSection";
+import Navbar from "../components/LandingPageComponents/Navbar";
 
-const Dashboard = () => {
+const LandingPage = () => {
   const { setCurrentUser } = useAuth();
   const navigate = useNavigate();
 
@@ -31,4 +31,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default LandingPage;

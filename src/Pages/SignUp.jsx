@@ -1,17 +1,21 @@
 import { useState } from "react";
-import { loginWithGoogle, loginWithGitHub, loginWithMail } from "../API/auth";
+import {  signUpWithMail, socialLogin } from "../API/auth";
 import { Bolt } from "lucide-react";
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import { sendAuthenticationToken } from "../API/auth";
+// import { sendAuthenticationToken } from "../API/auth";
+import toast from "react-hot-toast";
+import { useAuth } from "../Context/authContext";
 
 const Signup = () => {
   const [data, setData] = useState({
-    name: "",
-    password: "",
+    firstName: "",
+    lastName: "",
     email: "",
+    password: "",
   });
+const {setCurrentUser} = useAuth();
   const [isPending, setIsPending] = useState(false);
   const [loadingProvider, setLoadingProvider] = useState(null);
   const [error, setError] = useState(null);
@@ -23,54 +27,52 @@ const Signup = () => {
     }));
   };
 
-  const handleLogin = async (provider) => {
+ const handleLogin = async (provider) => {
     setLoadingProvider(provider);
     setError(null);
 
     try {
-      let result;
-      if (provider === "google") {
-        result = await loginWithGoogle();
-      } else if (provider === "github") {
-        result = await loginWithGitHub();
-      }
-
-      const user = result.user;
-      const token = await user.getIdToken();
-      //  await sendAuthenticationToken({ token });
-      localStorage.setItem("my token", token);
-
-      alert(`${provider} login successful!`);
+      const backendUser = await socialLogin(provider);
+      toast.success(`${provider} Sign Up successful!`);
+      setCurrentUser(backendUser);
     } catch (err) {
       console.error(err);
-      setError(err.message || "Login failed.");
+      const msg = err?.response?.data?.message || err.message || "Sign Up failed";
+      toast.error(msg);
+      setError(msg);
     } finally {
       setLoadingProvider(null);
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsPending(true);
-    setError(null);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsPending(true);
+  setError(null);
 
-    try {
-      const result = await loginWithMail(data);
-      const user = result.user;
-      const token = await user.getIdToken();
+  try {
+    const res = await signUpWithMail(data);
+    const { token, user } = res.data.data;
+    setCurrentUser(user)
 
-      localStorage.setItem("token", token);
-      alert("Email login successful!");
-    } catch (err) {
-      console.error(err);
-      setError(err.message || "Email login failed.");
-    } finally {
-      setIsPending(false);
-    }
-  };
+    localStorage.setItem("token", token);
+
+    toast.success(res.data.message);
+  } catch (err) {
+    console.error(err);
+    const errorMsg =
+      err.response?.data?.message || err.message || "Signup failed.";
+    toast.error(errorMsg);
+
+    setError(errorMsg);
+  } finally {
+    setIsPending(false);
+  }
+};
 
   return (
-    <div className="h-screen flex justify-center items-center md:p-20 bg-base-200 overflow-hidden">
+   <div className="min-h-screen flex justify-center items-center px-4 py-12 md:p-8 bg-base-200 overflow-auto">
+
       <div className="flex flex-col md:flex-row rounded-xl overflow-hidden">
         {/* Left Panel */}
         <div className="flex flex-col justify-start items-start border border-primary/25 rounded-l-xl p-6 bg-base-100 shadow-lg w-full md:w-1/2">
@@ -95,20 +97,39 @@ const Signup = () => {
           </section>
 
           <form onSubmit={handleSubmit} className="w-full space-y-2">
+            <div className="flex gap-3">
+
             <div className="form-control w-full">
               <label className="label">
-                <span className="label-text">Name</span>
+                <span className="label-text">First Name</span>
               </label>
               <input
                 type="text"
-                name="name"
+                name="firstName"
                 required
-                value={data.name}
+                value={data.firstName}
                 onChange={handleChange}
-                placeholder="John Doe"
+                placeholder="John"
                 className="input input-bordered rounded-md w-full"
               />
             </div>
+
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Last Name</span>
+              </label>
+              <input
+                type="text"
+                name="lastName"
+                required
+                value={data.lastName}
+                onChange={handleChange}
+                placeholder="Doe"
+                className="input input-bordered rounded-md w-full"
+              />
+            </div>
+            </div>
+
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Email</span>

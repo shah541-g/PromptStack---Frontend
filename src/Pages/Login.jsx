@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { loginWithGoogle, loginWithGitHub, loginWithMail } from "../API/auth";
+import { loginWithMail, socialLogin } from "../API/auth";
 import { Bolt } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import { sendAuthenticationToken } from "../API/auth";
+// import { sendAuthenticationToken } from "../API/auth";
+import toast from "react-hot-toast";
+import { useAuth } from "../Context/authContext";
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
   const [isPending, setIsPending] = useState(false);
   const [loadingProvider, setLoadingProvider] = useState(null);
   const [error, setError] = useState(null);
+  const { setCurrentUser } = useAuth();
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prev) => ({
@@ -21,24 +25,19 @@ const Login = () => {
   const handleLogin = async (provider) => {
     setLoadingProvider(provider);
     setError(null);
-
     try {
-      let result;
-      if (provider === "google") {
-        result = await loginWithGoogle();
-      } else if (provider === "github") {
-        result = await loginWithGitHub();
-      }
-
-      const user = result.user;
-      const token = await user.getIdToken();
-       await sendAuthenticationToken({ token });
-      // localStorage.setItem("my token", token);
-
-      alert(`${provider} login successful!`);
+      const backendUser = await socialLogin(provider);
+      toast.success(`${provider} login successful!`);
+      setCurrentUser(backendUser);
+      navigate(
+        backendUser.onboarding == "true" ? "/" : "/onBoarding",
+        { replace: true } 
+      );
     } catch (err) {
       console.error(err);
-      setError(err.message || "Login failed.");
+      const msg = err?.response?.data?.message || err.message || "Login failed";
+      toast.error(msg);
+      setError(msg);
     } finally {
       setLoadingProvider(null);
     }
@@ -50,15 +49,18 @@ const Login = () => {
     setError(null);
 
     try {
-      const result = await loginWithMail(data);
-      const user = result.user;
-      const token = await user.getIdToken();
-
+      const res = await loginWithMail(data);
+      const { user, token } = res.data.data;
+      setCurrentUser(user);
       localStorage.setItem("token", token);
-      alert("Email login successful!");
+      toast.success(res.data.message);
     } catch (err) {
       console.error(err);
-      setError(err.message || "Email login failed.");
+      const errorMsg =
+        err.response?.data?.message || err.message || "Login failed.";
+      toast.error(errorMsg);
+
+      setError(errorMsg);
     } finally {
       setIsPending(false);
     }
