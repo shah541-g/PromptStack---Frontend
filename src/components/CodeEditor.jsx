@@ -291,49 +291,49 @@ You can learn more about React in the [React documentation](https://reactjs.org/
     );
   };
 
-  const renderFileTree = (structure, basePath = '') => {
-    return (
-      <div className="select-none">
-        {/* Render folders */}
-        {structure.folders && Object.entries(structure.folders).map(([folderName, folderContent]) => {
-          const folderPath = basePath ? `${basePath}/${folderName}` : folderName;
-          const isExpanded = expandedFolders.includes(folderPath);
-          
-          return (
-            <div key={folderPath}>
-              <div
-                className="flex items-center gap-1 py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm"
-                onClick={() => toggleFolder(folderPath)}
-              >
-                {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                {isExpanded ? <FolderOpen size={14} /> : <Folder size={14} />}
-                <span>{folderName}</span>
-              </div>
-              {isExpanded && (
-                <div className="ml-4">
-                  {renderFileTree(folderContent, folderPath)}
-                </div>
-              )}
+ const renderFileTree = (structure, basePath = '') => {
+  return (
+    <div className="select-none">
+      {/* Render folders */}
+      {structure.folders && Object.entries(structure.folders).map(([folderName, folderContent]) => {
+        const folderPath = basePath ? `${basePath}/${folderName}` : folderName;
+        const isExpanded = expandedFolders.includes(folderPath);
+
+        return (
+          <div key={folderPath}>
+            <div
+              className="flex items-center gap-1 py-1 px-2 hover:bg-base-200 cursor-pointer text-sm"
+              onClick={() => toggleFolder(folderPath)}
+            >
+              {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+              {isExpanded ? <FolderOpen size={14} /> : <Folder size={14} />}
+              <span>{folderName}</span>
             </div>
-          );
-        })}
-        
-        {/* Render files */}
-        {structure.files && Object.entries(structure.files).map(([fileName, filePath]) => (
-          <div
-            key={filePath}
-            className={`flex items-center gap-2 py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm ${
-              activeFile === filePath ? 'bg-blue-100 dark:bg-blue-900' : ''
-            }`}
-            onClick={() => handleFileSelect(filePath)}
-          >
-            <span className="text-xs">{getFileIcon(fileName)}</span>
-            <span>{fileName}</span>
+            {isExpanded && (
+              <div className="ml-4">
+                {renderFileTree(folderContent, folderPath)}
+              </div>
+            )}
           </div>
-        ))}
-      </div>
-    );
-  };
+        );
+      })}
+
+      {/* Render files */}
+      {structure.files && Object.entries(structure.files).map(([fileName, filePath]) => (
+        <div
+          key={filePath}
+          className={`flex items-center gap-2 py-1 px-2 hover:bg-base-200 cursor-pointer text-sm ${
+            activeFile === filePath ? 'bg-primary/20' : ''
+          }`}
+          onClick={() => handleFileSelect(filePath)}
+        >
+          <span className="text-xs">{getFileIcon(fileName)}</span>
+          <span>{fileName}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
 
   const handleRunCode = () => {
     console.log('Running code...', files[activeFile]?.content);
@@ -379,28 +379,28 @@ You can learn more about React in the [React documentation](https://reactjs.org/
     }
   }, [isResizing]);
 
-  return (
-    <div className="h-full bg-white dark:bg-gray-900 flex flex-col">
+   return (
+    <div className="h-full bg-base-100 flex flex-col">
       {/* Toolbar */}
-      <div className="flex items-center justify-between p-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+      <div className="flex items-center justify-between p-2 border-b border-base-200 bg-base-200">
         <div className="flex items-center space-x-2">
           <button 
             onClick={handleRunCode}
-            className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded text-sm flex items-center gap-1"
+            className="px-3 py-1 bg-success hover:bg-success-focus text-base-100 rounded text-sm flex items-center gap-1"
           >
             <Play size={14} />
             Run
           </button>
           <button 
             onClick={handleSaveCode}
-            className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm flex items-center gap-1"
+            className="px-3 py-1 bg-primary hover:bg-primary-focus text-base-100 rounded text-sm flex items-center gap-1"
           >
             <Save size={14} />
             Save
           </button>
           <button 
             onClick={handleCopyCode}
-            className="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm flex items-center gap-1"
+            className="px-3 py-1 bg-neutral hover:bg-neutral-focus text-base-100 rounded text-sm flex items-center gap-1"
           >
             <Copy size={14} />
             Copy
@@ -411,13 +411,13 @@ You can learn more about React in the [React documentation](https://reactjs.org/
           <select 
             value={theme} 
             onChange={(e) => setTheme(e.target.value)}
-            className="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-700"
+            className="px-2 py-1 border border-base-200 rounded text-sm bg-base-100 text-base-content"
           >
             <option value="vs-dark">Dark</option>
             <option value="light">Light</option>
             <option value="vs">VS Code</option>
           </select>
-          <button className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+          <button className="p-1 hover:bg-base-200 rounded">
             <Settings size={16} />
           </button>
         </div>
@@ -426,11 +426,11 @@ You can learn more about React in the [React documentation](https://reactjs.org/
       <div className="flex-1 flex overflow-hidden">
         {/* File Explorer Sidebar */}
         <div 
-          className="bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto"
+          className="bg-base-200 border-r border-base-200 overflow-y-auto"
           style={{ width: sidebarWidth }}
         >
-          <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+          <div className="p-3 border-b border-base-200">
+            <h3 className="text-sm font-semibold text-base-content flex items-center gap-2">
               <Folder size={16} />
               Explorer
             </h3>
@@ -443,21 +443,21 @@ You can learn more about React in the [React documentation](https://reactjs.org/
         {/* Resize Handle */}
         <div
           ref={resizeRef}
-          className="w-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 cursor-col-resize"
+          className="w-1 bg-base-200 hover:bg-base-300 cursor-col-resize"
           onMouseDown={handleMouseDown}
         />
 
         {/* Editor Area */}
         <div className="flex-1 flex flex-col">
           {/* Tabs */}
-          <div className="flex items-center bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+          <div className="flex items-center bg-base-200 border-b border-base-200 overflow-x-auto">
             {openTabs.map((filePath) => (
               <div
                 key={filePath}
-                className={`flex items-center gap-2 px-3 py-2 border-r border-gray-200 dark:border-gray-700 text-sm cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-2 border-r border-base-200 text-sm cursor-pointer ${
                   activeFile === filePath 
-                    ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white' 
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-base-100 text-base-content' 
+                    : 'text-base-content/70 hover:bg-base-200'
                 }`}
                 onClick={() => handleFileSelect(filePath)}
               >
@@ -468,7 +468,7 @@ You can learn more about React in the [React documentation](https://reactjs.org/
                     e.stopPropagation();
                     handleCloseTab(filePath);
                   }}
-                  className="hover:bg-gray-300 dark:hover:bg-gray-600 rounded"
+                  className="hover:bg-base-300 rounded"
                 >
                   <X size={14} />
                 </button>
@@ -504,7 +504,7 @@ You can learn more about React in the [React documentation](https://reactjs.org/
                 }}
               />
             ) : (
-              <div className="flex items-center justify-center h-full text-gray-500">
+              <div className="flex items-center justify-center h-full text-base-content/70">
                 <div className="text-center">
                   <FileText size={48} className="mx-auto mb-4" />
                   <p>Select a file to start editing</p>
@@ -516,7 +516,7 @@ You can learn more about React in the [React documentation](https://reactjs.org/
       </div>
 
       {/* Status Bar */}
-      <div className="bg-gray-100 dark:bg-gray-800 px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-400">
+      <div className="bg-base-200 px-4 py-2 border-t border-base-200 text-xs text-base-content/70">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <span>Line 1, Column 1</span>
@@ -526,7 +526,7 @@ You can learn more about React in the [React documentation](https://reactjs.org/
           <div className="flex items-center space-x-4">
             <span>Spaces: 2</span>
             <span className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-success rounded-full"></div>
               Ready
             </span>
           </div>

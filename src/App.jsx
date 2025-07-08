@@ -65,6 +65,23 @@ const App = () => {
               )
             }
           />
+          <Route
+            path="/settings"
+            element={
+              isAuthenticated ? (
+                !isOnBoarded ? (
+                  <OnBoardingPage />
+                ) : (
+                  <AppLayout showNavbar="true">
+
+                  <SettingsPage/>
+                  </AppLayout>
+                )
+              ) : (
+                <Navigate to={"/logn"} />
+              )
+            }
+          />
         </Routes>
       </BrowserRouter>
     </div>

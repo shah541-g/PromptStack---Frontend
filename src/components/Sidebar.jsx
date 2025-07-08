@@ -1,6 +1,15 @@
 import React from "react";
-import { MessageSquare, Settings, Menu, X, Code, Rocket } from "lucide-react";
+import {
+  MessageSquare,
+  Settings,
+  Menu,
+  X,
+  Code,
+  Rocket,
+  CodeXml,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ProjectModal from "./ProjectModal"; // adjust path if needed
 
 const Sidebar = ({
   activeSection,
@@ -9,36 +18,37 @@ const Sidebar = ({
   setIsCollapsed,
 }) => {
   const sidebarItems = [
-    { id: "chat", label: "AI Chat", icon: MessageSquare },
+    { id: "project", label: "Create Project", icon: CodeXml },
     { id: "code", label: "Code Editor", icon: Code },
     { id: "deploy", label: "Deploy", icon: Rocket },
     { id: "settings", label: "Settings", icon: Settings },
   ];
+
   const navigate = useNavigate();
 
   return (
     <div
-      className={`bg-white dark:bg-gray-800 h-full transition-all duration-300 ${
+      className={`bg-base-100 h-full transition-all duration-300 ${
         isCollapsed ? "w-16" : "w-64"
-      } border-r border-gray-200 dark:border-gray-700 shadow-sm`}
+      } border-r border-base-200 shadow-sm`}
     >
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between p-4 border-b border-base-200">
         {!isCollapsed && (
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <MessageSquare className="w-4 h-4 text-blue-500" />
+          <h3 className="text-sm font-semibold text-base-content flex items-center gap-2">
+            <MessageSquare className="w-4 h-4 text-primary" />
             Workspace
           </h3>
         )}
         <button
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          className="p-2 hover:bg-base-200 rounded-lg transition-colors"
           onClick={() => setIsCollapsed(!isCollapsed)}
           title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {isCollapsed ? (
-            <Menu className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+            <Menu className="w-4 h-4 text-base-content" />
           ) : (
-            <X className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+            <X className="w-4 h-4 text-base-content" />
           )}
         </button>
       </div>
@@ -48,6 +58,29 @@ const Sidebar = ({
         {sidebarItems.map((item) => {
           const IconComponent = item.icon;
           const isActive = activeSection === item.id;
+
+          if (item.id === "project") {
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveSection(item.id);
+                  const modal = document.getElementById("create-project-modal");
+                  if (modal) modal.showModal();
+                }}
+                className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors flex items-center gap-2 ${
+                  isActive
+                    ? "bg-primary/20 text-primary"
+                    : "text-base-content hover:bg-base-200"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? item.label : ""}
+              >
+                <IconComponent className="w-4 h-4 flex-shrink-0" />
+                {!isCollapsed && <span>{item.label}</span>}
+              </button>
+            );
+          }
+
           return (
             <button
               key={item.id}
@@ -57,8 +90,8 @@ const Sidebar = ({
               }}
               className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors flex items-center gap-2 ${
                 isActive
-                  ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  ? "bg-primary/20 text-primary"
+                  : "text-base-content hover:bg-base-200"
               } ${isCollapsed ? "justify-center px-2" : ""}`}
               title={isCollapsed ? item.label : ""}
             >
@@ -68,6 +101,9 @@ const Sidebar = ({
           );
         })}
       </nav>
+
+      {/* DaisyUI Modal Component */}
+      <ProjectModal />
     </div>
   );
 };

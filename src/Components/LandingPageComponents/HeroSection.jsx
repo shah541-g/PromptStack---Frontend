@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
@@ -12,9 +13,9 @@ const HeroSection = () => {
           PromptStack turns your ideas into production-ready full-stack apps with real backend logic, APIs, and dashboards — auto-deployed to Vultr in seconds.
         </p>
         <div className="mt-10 flex justify-center gap-4 flex-wrap">
-          <button className="btn btn-secondary">
+          <Link to={"/login"} className="btn btn-secondary">
             Join Early Access
-          </button>
+          </Link>
           <button className="btn btn-outline btn-primary">
             See Example Projects
           </button>
