@@ -1,24 +1,36 @@
 import React, { useState } from "react";
 import { createProject } from "../API/projects";
+import toast from "react-hot-toast";
 
 const ProjectModal = () => {
   const [formData, setFormData] = useState({
     projectName: "",
     description: "",
   });
-  const handleChange=(e)=>{
-    const {name,value} = e.target
-    setFormData((preV)=>({
-        ...preV,
-        [name]:value
-    }))
-}
+  const [isPending,setIsPending] = useState(false)
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((preV) => ({
+      ...preV,
+      [name]: value,
+    }));
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await createProject(formData)
-    console.log(response.data)
+    setIsPending(true)
+    const response = await createProject(formData);
 
+    if (response?.data) {
+      toast.success(response?.data?.message);
+      document.getElementById("create-project-modal").close();
+      setFormData({ projectName: "", description: "" });
+      setIsPending(false)
+    } else {
+      toast.error("Failed to create project");
+    }
   };
+
   return (
     <dialog id="create-project-modal" className="modal">
       <div className="modal-box">
@@ -47,7 +59,7 @@ const ProjectModal = () => {
 
           <div className="modal-action flex justify-between items-center">
             <button type="submit" className="btn btn-primary">
-              Create
+                {isPending?   <span className="loading loading-spinner text-secondary" /> :"Create"}
             </button>
             <form method="dialog">
               <button className="btn">Cancel</button>
